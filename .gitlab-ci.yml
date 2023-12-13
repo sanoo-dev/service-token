@@ -1,0 +1,6 @@
+deploy:
+  stage: deploy
+  script:
+    - sshpass -p 'passroot' ssh root@192.168.61.40 'cd /var/www/html/verify-token && git pull origin master && sudo service php-fpm reload'
+  only:
+    - main

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Test SSO Redirect Login</title>
+</head>
+<body>
+
+<div>
+    <button onclick="login()"  class="login-btn">Login</button>
+    {{--    <a href="http://sso-member.tuoitre.local/auth/v1/login?redirectUrl=http://be-swift.tuoitre.vn:8005/test" class="login-btn">Login</a>--}}
+    <div class="info-txt">
+        <p>Hello <span class="name-txt"></span></p>
+        <button onclick="logout()">Logout</button>
+        <button onclick="chargeStar()">Charge Star Package</button>
+        <button onclick="subscribe()">Subscribe</button>
+        <button onclick="donate()">Donate</button>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js" integrity="sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    function login(){
+        // window.open("http://sso-member.tuoitre.local/auth/v1/login?redirectUrl=http://aaaa.tuoitre.vn:8005/test");
+        axios({
+            method: 'GET',
+            url: 'http://sso-member.tuoitre.local/api/front/v1/auth/login?redirectUrl=http://be-swift.tuoitre.local:8005/test',
+            headers: {
+                'Accept': 'application/json'
+            },
+            withCredentials: true
+        }).then((response) => {
+            window.open(response.data?.loginUrl ?? null)
+            console.log(response)
+        }).catch((error) => {
+            console.log(error)
+        });
+    }
+    function info() {
+        axios({
+            method: 'GET',
+            url: 'http://sso-member.tuoitre.local/api/front/v1/auth/info',
+            headers: {
+                'Accept': 'application/json'
+            },
+            withCredentials: true
+        }).then((response) => {
+            if (response.status === 200) {
+                document.getElementsByClassName('login-btn')[0].style.display = 'none'
+                document.getElementsByClassName('info-txt')[0].style.display = 'block'
+                document.getElementsByClassName('name-txt')[0].textContent = response.data.data.name
+            } else {
+                document.getElementsByClassName('info-txt')[0].style.display = 'none'
+                document.getElementsByClassName('login-btn')[0].style.display = 'block'
+            }
+        }).catch((error) => {
+            console.log(error)
+        });
+    }
+
+    function logout() {
+        axios({
+            method: 'POST',
+            url: 'http://sso-member.tuoitre.local/api/front/v1/auth/logout',
+            headers: {
+                'Accept': 'application/json'
+            },
+            withCredentials: true
+        }).then((response) => {
+            if (response.status === 200) {
+                document.getElementsByClassName('login-btn')[0].style.display = 'block'
+                document.getElementsByClassName('info-txt')[0].style.display = 'none'
+            } else {
+                alert("Error")
+            }
+        }).catch((error) => {
+            console.log(error)
+        });
+    }
+
+    function chargeStar() {
+        axios({
+            method: 'POST',
+            url: 'http://sso-member.tuoitre.local/api/front/v1/star-packages/charge',
+            headers: {
+                'Accept': 'application/json'
+            },
+            data: {
+                packageCode: "TTSAO-1000",
+                redirectUrl: "http://be-swift.tuoitre.local:8005/test"
+            },
+            withCredentials: true
+        }).then((response) => {
+            if (response.status === 200) {
+                window.open(response.data?.chargeUrl ?? null)
+                console.log(response)
+            } else {
+                alert("Error")
+            }
+        }).catch((error) => {
+            console.log(error)
+        });
+    }
+
+    function subscribe() {
+        axios({
+            method: 'POST',
+            url: 'http://sso-member.tuoitre.local/api/front/v1/subscriptions',
+            headers: {
+                'Accept': 'application/json'
+            },
+            data: {
+                subscriptionId: 1
+            },
+            withCredentials: true
+        }).then((response) => {
+            if (response.status === 200) {
+                console.log(response)
+                alert(response)
+            } else {
+                alert("Error")
+            }
+        }).catch((error) => {
+            console.log(error)
+        });
+    }
+
+    function donate() {
+        axios({
+            method: 'POST',
+            url: 'http://sso-member.tuoitre.local/api/front/v1/donations',
+            headers: {
+                'Accept': 'application/json'
+            },
+            data: {
+                star: 5
+            },
+            withCredentials: true
+        }).then((response) => {
+            if (response.status === 200) {
+                console.log(response)
+                alert(response)
+            } else {
+                alert("Error")
+            }
+        }).catch((error) => {
+            console.log(error)
+        });
+    }
+
+    info()
+</script>
+</body>
+</html>

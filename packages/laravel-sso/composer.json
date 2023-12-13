@@ -1,0 +1,30 @@
+{
+    "name": "tuoi-tre/laravel-sso",
+    "description": "description",
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "quocdaijr",
+            "email": "quocdajr@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "laravel/framework": "^8.0",
+        "fruitcake/laravel-cors": "^2.0",
+        "firebase/php-jwt": "^6.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "TuoiTre\\SSO\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TuoiTre\\SSO\\Providers\\SSOServiceProvider"
+            ]
+        }
+    }
+}
