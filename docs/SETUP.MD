@@ -11,12 +11,12 @@
 
   ```bash
     cd /var/www/html/ (or to your WORKDIR)
-    git clone git@gitlab.tuoitre.com.vn:services/member_sso.git project_name
+    git clone git@gitlab.tuoitre.com.vn:services/service-token.git project_name
     cd project_name
   ```
 
 - Copy .env.example to .env and change value of APP_ENV (local, dev, production)
-- Copy env/.env_local.example to .env_local and edit values to suit your environment
+- Unzip env.tar.xz
 
 - Setup docker: You can use your docker and edit config file (nginx,etc...)
   or:
@@ -27,7 +27,7 @@
 
 - Setup project:
     - Access to docker php (example the container_name of php is "mem_sso_php80")
-        - ```docker exec -it mem_sso_php80 bash```
+        - ```docker exec -it token_php80 bash```
     - Cd to project_name
         - ```cd /var/www/html/project_name```
     - Run command to install composer (vendor)
@@ -68,7 +68,7 @@
 
 # NOTE
 
-Setup docs may have shortcomings, if any error occurred, please contact me [quocdajr@gmail.com](#) for more details. Good luck!
+Setup docs may have shortcomings, if any error occurred, please contact me [ngodanh2345@gmail.com](#) for more details. Good luck!
 
 # CONTRIBUTES
 
