@@ -26,7 +26,7 @@
     - Run ```docker-composer up```.
 
 - Setup project:
-    - Access to docker php (example the container_name of php is "mem_sso_php80")
+    - Access to docker php (example the container_name of php is "token_php80")
         - ```docker exec -it token_php80 bash```
     - Cd to project_name
         - ```cd /var/www/html/project_name```
