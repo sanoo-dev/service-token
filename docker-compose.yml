@@ -3,84 +3,109 @@ networks:
   backend:
     external: true
 services:
-  mem_nginx:
+  token_nginx:
     image:  registry.tuoitre.vn/services/service-token-nginx:v1
-    container_name: token_nginx5
-    hostname: token_nginx5
+    container_name: token_nginx
     volumes:
-      - '.:/var/www/html/verify-token'
-      - './docker/nginx/conf.d/nginx.conf:/etc/nginx/conf.d/nginx.conf'
-      - './docker/nginx/logs:/var/log/nginx'
+      - ".:/var/www/html/verify-token"
+      - "./docker/nginx/conf.d/nginx.conf:/etc/nginx/conf.d/nginx.conf"
+      - "./docker/nginx/logs:/var/log/nginx"
     ports:
-      - 80:80
+      - '80:80'
     network_mode: "backend"
     dns:
       - 8.8.8.8
-      - 4.4.4.4
+      - 8.8.4.4
       - 192.168.161.139
     depends_on:
-      - mem_php80
+      - token_php
 
-
-  mem_php80:
-    image:  registry.tuoitre.vn/services/service-token-php:v3
+  token_php:
+#    image:  registry.tuoitre.vn/services/service-token-php:v3
     build: ./docker/php80/php-fpm
-    container_name: token_php805
+    container_name: token_php
     working_dir: /var/www/html
     volumes:
-      - '.:/var/www/html/verify-token'
-      - './docker/php80/supervisor/conf.d:/etc/supervisor/conf.d'
-      - './docker/php80/supervisor/logs:/var/log/cache'
-      - './docker/php80/php-fpm/conf.d/php-ini-overrides.ini:/etc/php/8.0/fpm/conf.d/99-overrides.ini'
-    expose:
-      - 9000
+      - ".:/var/www/html/verify-token"
+      - "./docker/php80/supervisor/conf.d:/etc/supervisor/conf.d"
+      - "./docker/php80/supervisor/logs:/var/log/cache"
+      - "./docker/php80/php-fpm/conf.d/php-ini-overrides.ini:/etc/php/8.0/fpm/conf.d/99-overrides.ini"
+    extra_hosts:
+        - "userbe.tuoitre.vn: 192.168.61.5"
     ports:
-      - 9000:9000
+      - "9000:9000"
     network_mode: "backend"
     dns:
       - 8.8.8.8
-      - 4.4.4.4
+      - 8.8.4.4
       - 192.168.161.139
-
     depends_on:
+      - token_elasticsearch
 
-      - mem_elasticsearch77
-
-  mem_elasticsearch77:
-    image: registry.tuoitre.vn/services/service-token-elasticsearch:v3
+  token_elasticsearch:
+#    image: registry.tuoitre.vn/services/service-token-elasticsearch:v3
     build: ./docker/elasticsearch717
-    container_name: mem_elasticsearch5
+    container_name: token_elasticsearch
     volumes:
-      - ./docker/elasticsearch717/data:/usr/share/elasticsearch/data
+      - "./docker/elasticsearch717/data:/usr/share/elasticsearch/data"
     environment:
       - discovery.type=single-node
     #      - ELASTICSEARCH_HEAP_SIZE=1g
     #        expose:
     #            - '9200:9200'
     ports:
-      - 9200:9200
-      - 9300:9300
+      - "9200:9200"
+      - "9300:9300"
     dns:
       - 8.8.8.8
-      - 4.4.4.4
+      - 8.8.4.4
       - 192.168.161.139
     network_mode: "backend"
-  mem_redis:
-    image: registry.tuoitre.vn/services/token_redis:v1
-    container_name: mem_redis162
-    volumes:
-      - './docker/redis/data:/data'
-    ports:
-      - 6379:6379
-    dns:
-      - 8.8.8.8
-      - 4.4.4.4
-      - 192.168.161.139
-    network_mode: "backend"
-  memcached:
-    image: registry.tuoitre.vn/services/token_memcached:v1
-    container_name: token_memcached4
 
+  token_redis:
+    image: registry.tuoitre.vn/services/token_redis:v1
+    container_name: token_redis
+    volumes:
+      - "./docker/redis/data:/data"
+    ports:
+      - "6379:6379"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 192.168.161.139
+    network_mode: "backend"
+
+  token_memcached:
+    image: registry.tuoitre.vn/services/token_memcached:v1
+    container_name: token_memcached
     ports:
       - "11211:11211"
     network_mode: "backend"
+
+  token_percona:
+    build: ./docker/percona8
+    container_name: token_percona
+    hostname: token_percona5
+    volumes:
+        - "./docker/percona8/data:/var/lib/mysql"
+    environment:
+        - MYSQL_ROOT_PASSWORD=12345@
+        - MYSQL_DATABASE=token
+        - MYSQL_USER=admin_user
+        - MYSQL_PASSWORD=admin_password
+    ports:
+        - "3306:3306"
+    dns:
+        - 8.8.8.8
+        - 8.8.4.4
+        - 192.168.161.139
+    network_mode: "backend"
+
+  token_adminer:
+    container_name: token_adminer
+    image: adminer
+    restart: always
+    expose:
+        - 8080
+    network_mode: "backend"
+

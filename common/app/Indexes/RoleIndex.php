@@ -4,7 +4,6 @@ namespace Common\App\Indexes;
 
 class RoleIndex extends CoreIndex
 {
-
     public function __construct()
     {
         return parent::__construct('db_id');
@@ -12,7 +11,7 @@ class RoleIndex extends CoreIndex
 
     public function index(): string
     {
-        return 'token_account_role';
+        return 'token_roles';
     }
 
     public function mapping(): array
@@ -24,26 +23,13 @@ class RoleIndex extends CoreIndex
             'name' => [
                 'type' => 'keyword'
             ],
-            'id_permission' => [
-                'type' => 'keyword',
-                'fields' => [
-                    'array' => [
-                        'type' => 'text',
-                        'fielddata' => true
-                    ]
+            'permissions' => [
+                "properties" => [
+                    "id" => ["type" => "long"],
+                    "name" => ["type" => "keyword"],
                 ]
             ],
-
-            'name_permission' => [
-                'type' => 'keyword',
-                'fields' => [
-                    'array' => [
-                        'type' => 'text',
-                        'fielddata' => true
-                    ]
-                ]
-            ],
-            'status' => [
+            'db_id' => [
                 'type' => 'keyword',
             ],
             'created_at' => [
@@ -51,9 +37,6 @@ class RoleIndex extends CoreIndex
             ],
             'updated_at' => [
                 'type' => 'keyword'
-            ],
-            'db_id' => [
-                'type' => 'keyword',
             ],
         ];
     }

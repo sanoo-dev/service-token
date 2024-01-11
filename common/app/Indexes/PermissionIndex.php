@@ -4,7 +4,6 @@ namespace Common\App\Indexes;
 
 class PermissionIndex extends CoreIndex
 {
-
     public function __construct()
     {
         return parent::__construct('db_id');
@@ -12,7 +11,7 @@ class PermissionIndex extends CoreIndex
 
     public function index(): string
     {
-        return 'token_account_permission';
+        return 'token_permissions';
     }
 
     public function mapping(): array
@@ -21,23 +20,20 @@ class PermissionIndex extends CoreIndex
             'id' => [
                 'type' => 'long',
             ],
-            'action' => [
-                'type' => 'keyword'
-            ],
-            'route' => [
+            'name' => [
                 'type' => 'keyword'
             ],
             'status' => [
                 'type' => 'keyword'
+            ],
+            'db_id' => [
+                'type' => 'keyword',
             ],
             'created_at' => [
                 'type' => 'keyword'
             ],
             'updated_at' => [
                 'type' => 'keyword'
-            ],
-            'db_id' => [
-                'type' => 'keyword',
             ],
         ];
     }

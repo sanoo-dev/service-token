@@ -5,29 +5,23 @@ namespace App\Modules\Auth\Services;
 use App\Modules\Auth\Helpers\Constants\ConstantDefine;
 use App\Modules\Auth\Helpers\ResponseHelper;
 use App\Modules\Auth\Repositories\Elasticsearch\Interfaces\AccountRepository;
-use App\Modules\Auth\Repositories\Elasticsearch\Interfaces\PermissionRepository;
-use App\Modules\Auth\Repositories\Elasticsearch\Interfaces\RoleRepository;
+use App\Modules\Auth\Repositories\Elasticsearch\Interfaces\PermissionRepositoryInterface;
+use App\Modules\Auth\Repositories\Elasticsearch\Interfaces\RoleRepositoryInterface;
 use Common\App\Models\Account;
 use Common\App\Models\Permission;
 use Common\App\Models\Role;
-use Firebase\JWT\JWT;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\Cookie\Factory as CookieFactory;
-
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class AuthService implements \App\Modules\Auth\Services\Interfaces\AuthService
 {
     public function __construct(
-
-        protected ResponseHelper       $responseHelper,
-        protected AccountRepository    $accountRepository,
-        protected RoleRepository       $roleRepository,
-        protected PermissionRepository $permissionRepository,
-        protected CookieFactory        $cookie,
+        protected ResponseHelper                $responseHelper,
+        protected AccountRepository             $accountRepository,
+        protected RoleRepositoryInterface       $roleRepository,
+        protected PermissionRepositoryInterface $permissionRepository,
+        protected CookieFactory                 $cookie,
 
     )
     {
@@ -49,7 +43,6 @@ class AuthService implements \App\Modules\Auth\Services\Interfaces\AuthService
 
     public function createAccount($data)
     {
-
         $email = !empty($data['email']) ? $data['email'] : null;
         $password = !empty($data['password']) ? $data['password'] : null;
         $id_role = !empty($data['id_role']) ? $data['id_role'] : 1;
@@ -237,7 +230,6 @@ class AuthService implements \App\Modules\Auth\Services\Interfaces\AuthService
         $route = !empty($data['route']) ? $data['route'] : null;
         $status = !empty($data['status']) ? $data['status'] : null;
 
-
         $check = $this->permissionRepository->findByAttributes(['action' => $action]);
         if (empty($check)) {
             $data = [
@@ -270,35 +262,6 @@ class AuthService implements \App\Modules\Auth\Services\Interfaces\AuthService
         } else {
 
             $mess = $this->responseReturn(ConstantDefine::EMPTY, 'tồn tại', []);
-            return $mess;
-
-        }
-    }
-
-    public function login_cache($data)
-    {
-        $username = !empty($data['username']) ? $data['username'] : null;
-        $email = !empty($data['email']) ? $data['email'] : null;
-        $phone = !empty([$data['phone']]) ? $data['phone'] : null;
-        $password = !empty($data['password']) ? $data['password'] : null;
-        if (!empty($username) && !empty($password)) {
-            $mess['message'] = "Không đủ thông tin";
-            $mess['code'] = ConstantDefine::ERROR_ALL;
-            return $mess;
-        }
-        $check = $this->accountRepository->findByAttributes(['email' => $email]);
-        $password_hash = !empty($val['_source']['password_hash']) ? $val['_source']['password_hash'] : null;
-        $validate_pass = Hash::check($password, $password_hash);
-        $status = !empty($val['_source']['status']) ? $val['_source']['status'] : 1;
-        if (!empty($check) && $validate_pass && $status != ConstantDefine::ACCOUNT_NO_ACTIVE) {
-            $key = env('SECRET_KEY_DATA');
-            $temp = [
-
-            ];
-
-            $payload['data'] = JWT::encode($temp, $key, 'HS256');
-            $mess['message'] = "Đăng nhập thành công ";
-            $mess['code'] = ConstantDefine::NO_ERROR;
             return $mess;
 
         }

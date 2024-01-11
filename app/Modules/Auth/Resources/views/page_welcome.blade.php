@@ -1,4 +1,4 @@
-@extends('token::layouts.master-token')
+@extends('token::layouts.master_token')
 
 @push('stylesheet')
     <link href="{{mix('css/bootstrap.min.css')}} " rel="stylesheet">
@@ -14,15 +14,11 @@
                         <div class="content center-content1">
                             <!-- Nội dung của div chứa nội dung -->
                             <h1>Hi Chào Cậu</h1>
-
                         </div>
                     </div>
-
             </main>
         </section>
-
     </div>
-
 @endsection
 
 @push('scripts')
@@ -196,10 +192,3 @@
     </script>
 
 @endpush
-
-
-
-
-
-
-

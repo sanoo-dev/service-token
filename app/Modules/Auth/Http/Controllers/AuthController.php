@@ -6,12 +6,6 @@ namespace App\Modules\Auth\Http\Controllers;
 use App\Http\Controllers\Controller;
 
 use App\Modules\Auth\Services\Interfaces\AuthService;
-use App\Modules\Token\Http\Requests\CreateTokenRequest;
-
-
-use App\Modules\Token\Http\Requests\VerifyTokenRequest;
-use App\Modules\Token\Services\Interfaces\ApiTokenService;
-
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;

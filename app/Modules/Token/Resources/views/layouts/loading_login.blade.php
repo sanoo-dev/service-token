@@ -1,4 +1,4 @@
-@extends('token::layouts.master-token')
+@extends('token::layouts.master_token')
 
 @push('stylesheet')
     <link href="{{mix('css/bootstrap.min.css')}} " rel="stylesheet">
@@ -6,9 +6,9 @@
 @section('title', 'CMS Token')
 @section('content')
     <div class="container p-0 mt-5 mb-5">
-            <main>
-                <p class="mylogo"><img src="{{mix('img/logologin.png')}}" title="" /></p>
-            </main>
+        <main>
+            <p class="mylogo"><img src="{{mix('img/logologin.png')}}" title=""/></p>
+        </main>
 
     </div>
 @endsection
@@ -32,8 +32,8 @@
 
         function confirmStatusActivityService(id) {
 
-            var span = document.getElementById("clearbtnsctivity1"+id);
-            var idText = document.getElementById("textStatus1"+id);
+            var span = document.getElementById("clearbtnsctivity1" + id);
+            var idText = document.getElementById("textStatus1" + id);
             if (span.classList.contains('fa-play')) {
                 if (confirm("Bạn có muốn mở hoạt động?")) {
                     $.ajax({
@@ -53,7 +53,7 @@
                             idText.classList.add("mylabel2");
                             $(document).ready(function () {
                                 // Remove existing text and add new text
-                                $('#textStatus1'+id).text('Activity');
+                                $('#textStatus1' + id).text('Activity');
                             });
                         },
                         error: function (xhr, status, error) {
@@ -84,7 +84,7 @@
                                 span.classList.add("fa-play");
                                 idText.classList.remove("mylabel2");
                                 idText.classList.add("mylabel1");
-                                $('#textStatus1'+id).text('Stop');
+                                $('#textStatus1' + id).text('Stop');
                             });
                         },
                         error: function (xhr, status, error) {
@@ -96,7 +96,8 @@
             }
 
         }
-        function  onClickDetailService(id){
+
+        function onClickDetailService(id) {
             fetch('/token/list-service?id=' + id, {
                 method: 'GET',
                 headers: {
@@ -108,7 +109,7 @@
                 .then(data => {
                     // Xử lý dữ liệu trả về thành công
                     var log = renderHtml(JSON.parse(data))
-                    var html = document.getElementById('detailService' );
+                    var html = document.getElementById('detailService');
                     html.innerHTML = log
 
                 })
@@ -117,8 +118,9 @@
                 });
 
         }
+
         function renderHtml(data) {
-            var html=''
+            var html = ''
 
             if (data != "") {
 
@@ -126,19 +128,19 @@
                     item => {
                         {
 
-                            html+=`
+                            html += `
                        <tbody>
                        <tr>
                        <td class="tb1"> Tên endpoint</td>
-                    <td class="tb2"> ${item.appName}</td>
+                    <td class="tb2"> ${item.app_name}</td>
                 </tr>
                     <tr>
                         <td class="tb1"> Secret Key</td>
-                        <td class="tb2">${item.secretKey}</td>
+                        <td class="tb2">${item.secret_key}</td>
                     </tr>
                     <tr>
                         <td class="tb1"> Partner Code</td>
-                        <td class="tb2">${item.partnerCode}</td>
+                        <td class="tb2">${item.partner_code}</td>
                     </tr>
                     <tr>
                         <td class="tb1"> Domain</td>
@@ -146,7 +148,7 @@
                     </tr>
                     <tr>
                         <td class="tb1"> IP</td>
-                        <td class="tb2">${item.serveIp}</td>
+                        <td class="tb2">${item.serve_ip}</td>
                     </tr>
                 </tbody>
                     `
@@ -159,10 +161,3 @@
     </script>
 
 @endpush
-
-
-
-
-
-
-

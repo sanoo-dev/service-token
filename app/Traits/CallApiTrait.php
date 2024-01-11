@@ -9,29 +9,6 @@ use Psr\Log\LogLevel;
 
 trait CallApiTrait
 {
-//    public function callWithGuzzle(string $method, string $url, array $parameters = [], $headers = []): mixed
-//    {
-//        $body = match (strtoupper($method)) {
-//            'POST', 'PUT', 'PATCH' => ['form_params' => $parameters],
-//            default => ['query' => $parameters],
-//        };
-//        $client = new Client();
-//
-//        try {
-//            $response = $client->request($method, $url, $body + ['headers' => $headers]);
-//            Log::info($response->getBody()->getContents());
-//            return array_merge(['success' => true], (array)@json_decode($response->getBody(), true));
-//        } catch (ClientException|ServerException $e) {
-//            Log::warning($e->getResponse()->getBody()->getContents());
-//            return array_merge(['success' => false], (array)@json_decode((string)$e->getResponse()->getBody(), true));
-//        } catch (GuzzleException|Exception $e) {
-//            Log::error($e->getMessage());
-//            return [
-//                'success' => false
-//            ];
-//        }
-//    }
-
     public function call(string $method, string $url, array $parameters = [], $headers = []): array
     {
         $body = match (strtoupper($method)) {

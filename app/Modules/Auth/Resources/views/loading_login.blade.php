@@ -1,4 +1,4 @@
-@extends('token::layouts.master-token')
+@extends('token::layouts.master_token')
 
 @push('stylesheet')
     <link href="{{mix('css/bootstrap.min.css')}} " rel="stylesheet">
@@ -6,10 +6,9 @@
 @section('title', 'CMS Token')
 @section('content')
     <div class="container p-0 mt-5 mb-5">
-
-            <main>
-                <p class="mylogo"><img src="{{mix('img/logologin.png')}}" title="" /></p>
-            </main>
+        <main>
+            <p class="mylogo"><img src="{{mix('img/logologin.png')}}" title="" /></p>
+        </main>
     </div>
 @endsection
 
@@ -159,10 +158,3 @@
     </script>
 
 @endpush
-
-
-
-
-
-
-

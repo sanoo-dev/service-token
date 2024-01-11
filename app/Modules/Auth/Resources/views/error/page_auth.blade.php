@@ -1,4 +1,4 @@
-@extends('token::layouts.master-token')
+@extends('token::layouts.master_token')
 
 @push('stylesheet')
     <link href="{{mix('css/bootstrap.min.css')}} " rel="stylesheet">
@@ -10,20 +10,16 @@
         <section class="mymain">
             @include('token::layouts.header', ['data' => $data ?? null])
             <main>
-
-
                 <div class="container1">
                     <div class="content">
                         <!-- Nội dung của div chứa nội dung -->
                         <h1>Unauthorized</h1>
-
                     </div>
                 </div>
             </main>
         </section>
 
     </div>
-
 @endsection
 
 @push('scripts')
@@ -176,10 +172,3 @@
     </script>
 
 @endpush
-
-
-
-
-
-
-

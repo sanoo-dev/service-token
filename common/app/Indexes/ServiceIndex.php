@@ -4,7 +4,6 @@ namespace Common\App\Indexes;
 
 class ServiceIndex extends CoreIndex
 {
-
     public function __construct()
     {
         return parent::__construct('db_id');
@@ -12,7 +11,7 @@ class ServiceIndex extends CoreIndex
 
     public function index(): string
     {
-        return 'token_service';
+        return 'token_services';
     }
 
     public function mapping(): array
@@ -21,43 +20,40 @@ class ServiceIndex extends CoreIndex
             'id' => [
                 'type' => 'long',
             ],
-            'partnerCode' => [
+            'app_id' => [
                 'type' => 'keyword'
             ],
-            'secretKey' => [
+            'name' => [
                 'type' => 'keyword'
             ],
-            'appId' => [
-                'type' => 'keyword'
+            'status' => [
+                'type' => 'integer'
             ],
-            'appName' => [
-                'type' => 'keyword'
-            ],
-            'serveIp' => [
+            'server_ip' => [
                 'type' => 'keyword'
             ],
             'domain' => [
                 'type' => 'keyword'
             ],
-            'serveIpTransfer' => [
+            'endpoint_ip' => [
                 'type' => 'keyword'
             ],
-            'domainTransfer' => [
+            'endpoint_domain' => [
+                'type' => 'keyword'
+            ],
+            'token_type' => [
+                'type' => 'keyword'
+            ],
+            'partner_code' => [
                 'type' => 'keyword'
             ],
             'meta' => [
-                'type' => 'keyword'
-            ],
-            'typeToken' => [
                 'type' => 'keyword'
             ],
             'content' => [
                 'type' => 'keyword'
             ],
             'db_id' => [
-                'type' => 'integer'
-            ],
-            'status' => [
                 'type' => 'integer'
             ],
             'created_at' => [

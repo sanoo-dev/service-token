@@ -2,14 +2,11 @@
 
 namespace App\Modules\Token\Helpers;
 
-use App\Modules\Token\Helpers\Interfaces\ResponseHelper as ResponseHelperInterface;
+use App\Modules\Token\Helpers\Interfaces\ResponseHelperInterface;
 use Illuminate\Http\JsonResponse;
-use function Psy\debug;
-
 
 class ResponseHelper implements ResponseHelperInterface
 {
-
     protected int $statusCode = 200;
 
     public function getStatusCode(): int

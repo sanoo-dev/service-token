@@ -4,14 +4,14 @@ namespace App\Modules\Auth\Http\Middleware;
 
 use App\Modules\Auth\Helpers\Constants\ConstantDefine;
 use App\Modules\Auth\Repositories\Elasticsearch\Interfaces\AccountRepository;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use Common\App\Traits\CallApiTrait;
 use Closure;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Session;
 
 class  CheckCookie
 {
+    use CallApiTrait;
+
     public function __construct(protected AccountRepository $accountRepository)
     {
         $this->redis_account = Redis::connection('account')->client();
@@ -20,133 +20,54 @@ class  CheckCookie
 
     public function handle($request, Closure $next)
     {
+        $cookieERP = \Cookie::get('_ttoauth_prod');
 
-        $cookie_erp = \Cookie::get('_ttoauth_prod');
-        if (empty($cookie_erp)) {
-            $back_url = env('URL_ERP_LOGIN') . env('URL_TOKEN');
+        $auth = $this->getAuth($cookieERP);
 
-            return redirect($back_url);
-        }
+        if (empty($auth)) return false;
 
-        $curl = $this->curlData($cookie_erp);
+        if ($auth['user_dep_pos'][0]['parent']['name'] === 'Phòng Công nghệ Thông tin') return $next($request);
 
-        if (!empty($curl['data'])) {
-            $user_dep_pos = $curl['data']['user_dep_pos'][0]['parent']['name'] ?? null;
-            $fullname=$curl['data']['full_name'] ?? null;
-            $words = explode(" ", $fullname);
-            $name1 = $words[count($words)-2];
-            $name2 = $words[count($words)-1];
-            $name=$name1.' '.$name2;
-            $email = $curl['data']['email'] ?? null;
-            $slug = $this->textToSlug($user_dep_pos);
-            // check authorization
-            $da = $this->checkAuth($email, $slug,$name);
-
-            if ($da['message'] == 'oke') {
-                return $next($request);
-            } else {
-                Session::flash('alert', 'Bạn không có quyền truy cập Service Token!');
-                return redirect( 'http://token.tuoitre.vn/token/viewWelcome');
-            }
-        } else {
-            if (!empty($curl['error'])) {
-                return $curl;
-            }
-
-
-            return $next($request);
-        }
-
+        return false;
     }
 
-    public function curlData($cookie_erp)
+    private function getAuth(string $cookieERP): array
     {
+        // Decode JWT Token
+        $jwtDecoded = $this->decodeJWTTokenPayload($cookieERP);
 
-        $auth = $this->parseToken($cookie_erp);
+        // Check access token
+        if (empty($jwtDecoded['access_token'])) return [];
 
-        if (!empty($auth)) {
-            if (!empty($auth['access_token'])) {
+        // Curl to get auth with access token
+        $url = env('URL_PARSE_TOKEN');
+        $parameters = [];
+        $headers = [
+            'X-Custom-Header'=> 'Value',
+            'Authorization'=>'Bearer ' . $jwtDecoded['access_token'],
+        ];
 
-                try {
-                    $ac = $auth['access_token'];
+        $auth = $this->call('GET', $url, $parameters, $headers);
 
-                    $url = env('URL_PARSE_TOKEN');
-
-                    $client=new Client([
-                        'headers'=>[
-                            'X-Custom-Header'=>'Value',
-                            'Authorization'=>'Bearer '.$ac
-                        ]
-                    ]);
-
-                    $response=$client->get($url);
-                    $data=json_decode($response->getBody()->getContents(),true);
-
-                    if (!empty($data['data'])) {
-                        return $data;
-                    }
-                    $data['error'] = $data;
-                    return $data;
-                } catch (RequestException $exception) {
-                    if ($exception->getCode() === CURLE_OPERATION_TIMEOUTED) {
-                        // Nếu là lỗi timeout, bỏ qua yêu cầu
-                        echo "Request was skipped due to timeout.";
-                    } else {
-                        // Xử lý các lỗi khác nếu cần
-                        echo "An error occurred: " . $exception->getMessage();
-                    }
-                }
-            } else {
-                $result = [
-                    'message' => 'Access token not found',
-                    'data' => []
-                ];
-                return $result;
-            }
-
-        } else {
-            $result = [
-                'message' => 'Api no data',
-                'data' => []
-            ];
-            return $result;
+        // Handle result
+        if (!empty($auth) && $auth['success'] && !empty($auth['data'])) {
+            return $auth['data'];
         }
 
-
+        return [];
     }
 
-    public function parseToken($token)
+    private function decodeJWTTokenPayload($token)
     {
-
         try {
-
             $base64Url = explode('.', $token)[1];
-
             $base64 = str_replace(['-', '_'], ['+', '/'], $base64Url);
             $decodedPayload = base64_decode($base64);
-
-
-            $payload = json_decode($decodedPayload, true);
-
-
-            return $payload;
+            return json_decode($decodedPayload, true);
         } catch (\Exception $e) {
-
+            \Log::error('Error decoding JWT token payload: ' . $e->getMessage());
+            return null;
         }
-    }
-
-    function textToSlug($text)
-    {
-        // Remove diacritics from Vietnamese characters
-        $slug = normalizer_normalize($text, \Normalizer::FORM_D);
-        $slug = preg_replace('/[\x{0300}-\x{036f}]/u', '', $slug);
-
-        // Replace special characters and spaces with hyphens
-        $normalizedSlug = preg_replace('/[^\w\s-]/u', '', $slug);
-        $normalizedSlug = strtolower($normalizedSlug);
-        $normalizedSlug = preg_replace('/\s+/u', '-', $normalizedSlug);
-
-        return $normalizedSlug;
     }
 
     public function checkAuth($email, $slug,$name)

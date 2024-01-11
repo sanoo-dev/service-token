@@ -8,11 +8,10 @@ use TuoiTre\SSO\Http\Requests\ApiRequest;
 
 class VerifyTokenRequest extends ApiRequest
 {
-    public function rules() {
+    public function rules(): array
+    {
         return [
-            'publicKey' => 'required|string',
-            'jwt' => 'required|string',
-
+            'token' => 'required|string',
         ];
     }
 }

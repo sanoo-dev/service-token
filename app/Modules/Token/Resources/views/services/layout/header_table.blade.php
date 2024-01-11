@@ -5,7 +5,7 @@
     </th>
     <th  scope="col">
         <a class="dropdown-toggle btn"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Tên service
+            Tên Service
         </a>
     </th>
     <th  scope="col">
@@ -20,12 +20,12 @@
     </th>
     <th  scope="col">
         <a class="dropdown-toggle btn"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            IP endpoint
+            Endpoint IP
         </a>
     </th>
     <th  scope="col">
         <a class="dropdown-toggle btn"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Domain endpoint
+            Endpoint Domain
         </a>
     </th>
     <th  scope="col">
@@ -35,8 +35,8 @@
     </th>
 
 
-@if(!empty($customData['checkLast'])&&$customData['checkLast']!=1)
-        <th  scope="col">
+@if(!empty($checkLast) && $checkLast != 1)
+        <th scope="col">
             <a class="dropdown-toggle btn "  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Last Modified
             </a>
